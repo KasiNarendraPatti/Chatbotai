@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Crop Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-emerald-50 to-purple-100 text-gray-800 font-inter min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between bg-white/70 backdrop-blur-md shadow px-6 py-4 sticky top-0 z-10">
+    <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-emerald-500 bg-clip-text text-transparent">
+      🌱 AI Crop Assistant
+    </h1>
+    <button class="px-4 py-2 bg-gradient-to-r from-pink-400 to-purple-500 hover:opacity-90 text-white rounded-xl shadow transition">
+      Logout
+    </button>
+  </nav>
+
+  <div class="flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white/60 backdrop-blur-xl shadow-lg min-h-screen p-6">
+      <nav class="space-y-4">
+        <a href="#" class="flex items-center p-3 rounded-xl bg-gradient-to-r from-emerald-400 to-green-500 text-white shadow-md hover:scale-105 transition">
+          🤖 <span class="ml-2 font-medium">AI Chat</span>
+        </a>
+        <a href="#" class="flex items-center p-3 rounded-xl hover:bg-pink-100 text-gray-700 transition">
+          🌾 <span class="ml-2">Crop Recommendation</span>
+        </a>
+        <a href="#" class="flex items-center p-3 rounded-xl hover:bg-pink-100 text-gray-700 transition">
+          🩺 <span class="ml-2">Plant Health</span>
+        </a>
+        <a href="#" class="flex items-center p-3 rounded-xl hover:bg-pink-100 text-gray-700 transition">
+          📈 <span class="ml-2">Market Trends</span>
+        </a>
+        <a href="#" class="flex items-center p-3 rounded-xl hover:bg-pink-100 text-gray-700 transition">
+          ⚙️ <span class="ml-2">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 space-y-8">
+
+      <!-- AI Chat Section -->
+      <div class="bg-white/70 backdrop-blur-lg p-6 rounded-2xl shadow-lg flex flex-col h-[70vh]">
+        <h3 class="text-xl font-semibold bg-gradient-to-r from-pink-500 to-emerald-500 bg-clip-text text-transparent mb-4">
+          💬 AI Chat
+        </h3>
+        
+        <!-- Chat Window -->
+        <div id="chat-window" class="flex-1 overflow-y-auto space-y-4 p-2">
+          <div class="flex items-start gap-3">
+            <span class="text-pink-500 text-xl">🤖</span>
+            <div class="bg-gradient-to-r from-pink-200 to-purple-200 p-3 rounded-xl shadow text-gray-800 max-w-lg">
+              Hello! I’m your AI crop advisor. Ask me about soil, weather, or best crops 🌾.
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Box -->
+        <div class="flex mt-4 gap-2 items-center">
+          <input id="chat-input" type="text" placeholder="Ask about crops..." 
+                 class="flex-1 border border-pink-200 bg-white/70 rounded-xl p-3 text-gray-800 focus:ring-2 focus:ring-pink-400">
+          <button id="mic-btn" class="bg-gradient-to-r from-emerald-400 to-green-500 hover:opacity-90 text-white px-4 py-3 rounded-xl">🎤</button>
+          <label for="img-upload" class="cursor-pointer bg-gradient-to-r from-purple-400 to-pink-500 hover:opacity-90 text-white px-4 py-3 rounded-xl">
+            📷
+          </label>
+          <input id="img-upload" type="file" accept="image/*" class="hidden">
+          <button id="send-btn" class="bg-gradient-to-r from-pink-400 to-purple-500 hover:opacity-90 text-white px-4 py-3 rounded-xl">Send</button>
+          <select id="lang-select" class="ml-2 border rounded px-2 py-1">
+            <option value="en-IN">English</option>
+            <option value="te-IN">Telugu</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Crop Recommendation Section -->
+      <div class="bg-white/70 backdrop-blur-lg p-6 rounded-2xl shadow-lg">
+        <h3 class="text-xl font-semibold bg-gradient-to-r from-emerald-400 to-pink-500 bg-clip-text text-transparent mb-4">
+          🌾 Crop Recommendation
+        </h3>
+        <form id="recommend-form" class="flex flex-col gap-3">
+          <div class="flex gap-2">
+            <input type="number" name="ph" placeholder="pH" class="flex-1 border p-2 rounded" value="6.5">
+            <input type="number" name="nitrogen" placeholder="Nitrogen" class="flex-1 border p-2 rounded" value="120">
+            <input type="number" name="phosphorus" placeholder="Phosphorus" class="flex-1 border p-2 rounded" value="80">
+          </div>
+          <div class="flex gap-2">
+            <input type="number" name="potassium" placeholder="Potassium" class="flex-1 border p-2 rounded" value="70">
+            <input type="number" name="rainfall" placeholder="Rainfall" class="flex-1 border p-2 rounded" value="200">
+            <input type="number" name="temperature" placeholder="Temperature" class="flex-1 border p-2 rounded" value="28">
+          </div>
+          <button type="submit" class="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-4 py-2 rounded-xl hover:opacity-90">Get Recommendation</button>
+        </form>
+        <div id="recommendResult" class="mt-4"></div>
+      </div>
+
+      <!-- Market Trends Section -->
+      <div class="bg-white/70 backdrop-blur-lg p-6 rounded-2xl shadow-lg">
+        <h3 class="text-xl font-semibold bg-gradient-to-r from-emerald-400 to-pink-500 bg-clip-text text-transparent mb-4">
+          📊 Market Trends
+        </h3>
+        <canvas id="cropChart"></canvas>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- JS Integration -->
+  <script>
+    const backendURL = "http://127.0.0.1:8000";
+    const chatWindow = document.getElementById("chat-window");
+    const chatInput = document.getElementById("chat-input");
+    const sendBtn = document.getElementById("send-btn");
+    const micBtn = document.getElementById("mic-btn");
+    const imgUpload = document.getElementById("img-upload");
+    const recommendForm = document.getElementById("recommend-form");
+    const recommendResult = document.getElementById("recommendResult");
+    const cropChartCanvas = document.getElementById("cropChart");
+    const langSelect = document.getElementById("lang-select");
+    let marketChart;
+
+    // --- Add Message ---
+    function addMessage(sender, text, isImage=false){
+      const div = document.createElement("div");
+      div.className = "flex items-start gap-3 "+(sender==="user"?"justify-end":"");
+      const bubble = document.createElement("div");
+      bubble.className = sender==="user"
+        ? "bg-gradient-to-r from-emerald-300 to-green-400 text-white p-3 rounded-xl max-w-xs"
+        : "bg-gradient-to-r from-pink-200 to-purple-200 text-gray-800 p-3 rounded-xl max-w-xs";
+
+      if(isImage){
+        const img = document.createElement("img");
+        img.src = text;
+        img.className = "rounded-lg max-h-40";
+        bubble.appendChild(img);
+      }else bubble.innerText = text;
+
+      if(sender==="user") div.appendChild(bubble);
+      else {
+        const icon = document.createElement("span");
+        icon.className = "text-pink-500 text-xl";
+        icon.innerText = "🤖";
+        div.appendChild(icon);
+        div.appendChild(bubble);
+        speakText(text);
+      }
+
+      chatWindow.appendChild(div);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    // --- Text-to-Speech ---
+    function speakText(text){
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = langSelect.value || "en-IN";
+      synth.speak(utter);
+    }
+
+    // --- Chat ---
+    async function sendChatMessage(message){
+      addMessage("user", message);
+      chatInput.value="";
+      try{
+        const res = await fetch(`${backendURL}/chat`, {
+          method:"POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({message})
+        });
+        if(!res.ok) throw new Error("Backend error");
+        const data = await res.json();
+        addMessage("ai", data.reply);
+      }catch(err){
+        console.error(err);
+        addMessage("ai","⚠️ Unable to reach AI server.");
+      }
+    }
+
+    sendBtn.addEventListener("click",()=>{if(chatInput.value.trim()) sendChatMessage(chatInput.value.trim());});
+    chatInput.addEventListener("keypress", e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
+
+    // --- Mic / Speech Recognition ---
+    if("SpeechRecognition" in window||"webkitSpeechRecognition" in window){
+      const recognition = new (window.SpeechRecognition||window.webkitSpeechRecognition)();
+      recognition.lang = langSelect.value;
+      micBtn.addEventListener("click", ()=>{
+        recognition.lang = langSelect.value;
+        recognition.start();
+        micBtn.textContent="🎤 Listening...";
+      });
+      recognition.onresult = e=>{
+        const transcript = e.results[0][0].transcript;
+        chatInput.value = transcript;
+        sendChatMessage(transcript);
+        micBtn.textContent="🎤";
+      };
+      recognition.onerror = ()=>{ micBtn.textContent="🎤"; };
+    }else{ micBtn.disabled=true; micBtn.title="Speech Recognition not supported"; }
+
+    // --- Plant Health ---
+    imgUpload.addEventListener("change", async e=>{
+      const file=e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ()=> addMessage("user", reader.result,true);
+      reader.readAsDataURL(file);
+
+      const formData = new FormData();
+      formData.append("image", file);
+      try{
+        const res = await fetch(`${backendURL}/plant-health`, {method:"POST", body:formData});
+        if(!res.ok) throw new Error("Backend error");
+        const data = await res.json();
+        addMessage("ai", `Plant Health: ${data.status}\nAdvice: ${data.advice}`);
+      }catch(err){console.error(err); addMessage("ai","⚠️ Unable to analyze plant image.");}
+    });
+
+    // --- Crop Recommendation ---
+    recommendForm.addEventListener("submit", async e=>{
+      e.preventDefault();
+      const formData = new FormData(recommendForm);
+      const payload = {
+        ph:parseFloat(formData.get("ph")),
+        nitrogen:parseFloat(formData.get("nitrogen")),
+        phosphorus:parseFloat(formData.get("phosphorus")),
+        potassium:parseFloat(formData.get("potassium")),
+        rainfall:parseFloat(formData.get("rainfall")),
+        temperature:parseFloat(formData.get("temperature"))
+      };
+      try{
+        const res = await fetch(`${backendURL}/recommend`, {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify(payload)
+        });
+        if(!res.ok) throw new Error("Backend error");
+        const data = await res.json();
+        recommendResult.innerHTML = `
+          <div class="p-3 bg-white rounded-lg shadow-md">
+            <p><strong>Recommended Crops:</strong> ${data.crops.join(", ")}</p>
+            <p><strong>Yield Estimate:</strong> ${data.yield_estimate} tons/ha</p>
+            <p><strong>Profit Estimate:</strong> $${data.profit_estimate}/ha</p>
+            <p><strong>Sustainability Score:</strong> ${data.sustainability_score}</p>
+          </div>
+        `;
+      }catch(err){console.error(err); recommendResult.innerHTML=`<p class="text-red-600">⚠️ Unable to fetch crop recommendations.</p>`;}
+    });
+
+    // --- Market Trends ---
+    async function loadMarketTrends(){
+      try{
+        const res = await fetch(`${backendURL}/market-trends`);
+        if(!res.ok) throw new Error("Backend error");
+        const data = await res.json();
+        if(marketChart) marketChart.destroy();
+        marketChart = new Chart(cropChartCanvas.getContext("2d"), {
+          type:"line",
+          data:{labels:data.labels, datasets:[{label:"Crop Prices (USD/ton)", data:data.prices, borderColor:"rgba(16,185,129,1)", backgroundColor:"rgba(16,185,129,0.2)", fill:true, tension:0.3}]},
+          options:{responsive:true, plugins:{legend:{display:true}}, scales:{y:{beginAtZero:false}}}
+        });
+      }catch(err){console.error("Error loading market trends:", err);}
+    }
+
+    loadMarketTrends();
+  </script>
+</body>
+</html>
